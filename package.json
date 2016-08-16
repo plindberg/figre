@@ -1,0 +1,28 @@
+{
+  "name": "figre",
+  "version": "0.0.1",
+  "description": "Twelve-factor config resolution.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monieshq/figre.git"
+  },
+  "scripts": {
+    "test": "npm run test:test && npm run test:lint",
+    "test:lint": "eslint .",
+    "test:test": "mocha --recursive --require test/mocha-setup"
+  },
+  "dependencies": {
+    "dotenv": "2.0.0",
+    "logrule": "github:monieshq/logrule#7a34087"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "chai": "3.5.0",
+    "common-project": "github:monieshq/common-project#06475d1",
+    "eslint": "3.3.1",
+    "mocha": "3.0.2",
+    "sinon": "1.17.5",
+    "sinon-chai": "2.8.0"
+  }
+}
