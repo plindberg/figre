@@ -12,7 +12,7 @@
 let ConfigResolver = exports;
 
 const dotenv = require('dotenv');
-const {intersection, omit, pick, reduce} = require('lodash');
+const {intersection, omit, reduce} = require('lodash');
 
 const {logger} = require('./logging');
 
@@ -36,11 +36,6 @@ const {logger} = require('./logging');
 //   logLevel: {_env: 'LOG_LEVEL'}
 // }
 // ```
-//
-// The returned object also has a function `subset` which allows you to only pass the
-// relevant configuration to the modules of the application. This helps isolate modules
-// from each other. The `subset` function takes a string or an array of strings with
-// property names to select.
 ConfigResolver.create = function (spec) {
   const options = spec._options || {};
 
@@ -53,11 +48,7 @@ ConfigResolver.create = function (spec) {
 
   logger.trace(config, 'resolved config');
 
-  return Object.assign({
-    subset() {
-      return subset(config, arguments);
-    }
-  }, config);
+  return config;
 };
 
 // Recurses through the `spec`, fetching values from the `context`. Currently, only
@@ -76,14 +67,4 @@ function resolveSpec(spec, context) {
     }
     return config;
   }, {});
-}
-
-// Returns config with only the specified `keys`. The object returned also includes the
-// function `subset` for further subsetting. (Yo dawg I herd you like subsetting.)
-function subset(config, keys) {
-  let subsetConfig = pick(config, keys);
-  subsetConfig.subset = function () {
-    return subset(subsetConfig, arguments);
-  };
-  return subsetConfig;
 }

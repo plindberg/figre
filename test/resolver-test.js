@@ -73,14 +73,4 @@ describe('Configuration resolution', () => {
       expect(dotenv.config).to.have.been.called;
     });
   });
-
-  describe('Subsetting configuration', () => {
-    it('Allows subsetting on top-level keys', () => {
-      const config = ConfigResolver.create({_injectedConfig:
-        {httpServer: true, witai: true, wolframAlpha: true, redis: true}});
-      const subset = config.subset('witai', 'redis');
-      expect(subset).to.include.keys('witai', 'redis');
-      expect(subset).to.not.include.keys('wolframAlpha', 'httpServer');
-    });
-  });
 });
