@@ -61,6 +61,22 @@ describe('Configuration resolution', () => {
     });
   });
 
+  context('Serialised variables', () => {
+    it('Resolves JSON serialised variables', () => {
+      const config = ConfigResolver.create({
+        _context: {
+          _test: {jsonArray: '[1,2,3]', jsonObject: '{"a":1,"b":2,"c":3}'}
+        },
+        test: {
+          array: {_test: 'jsonArray', _format: 'JSON'},
+          object: {_test: 'jsonObject', _format: 'JSON'}
+        }
+      });
+      expect(config).to.have.deep.property('test.array').which.deep.equals([1, 2, 3]);
+      expect(config).to.have.deep.property('test.object').which.deep.equals({a: 1, b: 2, c: 3});
+    });
+  });
+
   describe('Conditionally loading .env file', () => {
     beforeEach(() => {
       sinon.stub(dotenv, 'config');

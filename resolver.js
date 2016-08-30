@@ -61,7 +61,13 @@ function resolveSpec(spec, context) {
       if (typeof contextValue == 'undefined') {
         throw new Error(`${value[contextKey]} not found`);
       }
-      config[key] = contextValue;
+      switch (value._format) {
+      case 'JSON':
+        config[key] = JSON.parse(contextValue);
+        break;
+      default:
+        config[key] = contextValue;
+      }
     } else {
       config[key] = resolveSpec(value, context);
     }
