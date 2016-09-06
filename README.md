@@ -28,8 +28,12 @@ const ConfigResolver = require('figre/resolver'),
       transactions: {
         jwtSecret: {_env: 'JWT_SECRET_TRANSACTIONS'}
       }
-    }
+    },
+    logging: {
+      level: {_env: 'LOG_LEVEL', _default: 'info'}
+    },
+    redis: {_env: 'REDIS', _format: 'JSON'}
   });
 ```
 
-This would go early in your `app.js`. It maps the config `auth.transactions.jwtSecret` to the environment variable `JWT_SECRET_TRANSACTIONS`. Also, it adds the Cloud Foundry environment and maps the port and URL for the HTTP server.
+This would go early in your `app.js`. It maps the config `auth.transactions.jwtSecret` to the environment variable `JWT_SECRET_TRANSACTIONS`. It adds the Cloud Foundry environment and maps the port and URL for the HTTP server. It sets `config.logging.level` to `"info"` unless the environment variable `LOG_LEVEL` exists. Finally, it allows setting any Redis options as JSON in the environment variable `REDIS`.
