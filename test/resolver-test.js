@@ -38,6 +38,17 @@ describe('Configuration resolution', () => {
       expect(config).to.have.deep.property('logentries.level', 'trace');
     });
 
+    it('Resolves to default value if provided and variable is missing', () => {
+      const config = ConfigResolver.create({fallback: {_env: 'NOT_THERE', _default: 'phew'}});
+      expect(config).to.have.property('fallback', 'phew');
+    });
+
+    it('Doesn’t replace falsy values with defaults', () => {
+      const config = ConfigResolver.create(
+        {_context: {_test: {falsy: 0}}, falsy: {_test: 'falsy', _default: 'falsy is ok'}});
+      expect(config).to.have.property('falsy', 0);
+    });
+
     it('Throws an error if environment variable is missing', () => {
       expect(() => ConfigResolver.create({missing: {_env: 'NOT_THERE'}})).to.throw(/NOT_THERE/);
     });
@@ -74,6 +85,12 @@ describe('Configuration resolution', () => {
       });
       expect(config).to.have.deep.property('test.array').which.deep.equals([1, 2, 3]);
       expect(config).to.have.deep.property('test.object').which.deep.equals({a: 1, b: 2, c: 3});
+    });
+
+    it('Doesn’t attempt to deserialise JSON when falling back on default vaule', () => {
+      const config = ConfigResolver.create(
+        {fallback: {_env: 'NOT_THERE', _format: 'JSON', _default: 'not JSON'}});
+      expect(config).to.have.property('fallback', 'not JSON');
     });
   });
 

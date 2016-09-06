@@ -58,19 +58,24 @@ function resolveSpec(spec, context) {
     const [contextKey] = intersection(Object.keys(value), Object.keys(context));
     if (contextKey) {
       const contextValue = context[contextKey][value[contextKey]];
-      if (typeof contextValue == 'undefined') {
+
+      if (typeof contextValue == 'undefined' && typeof value._default == 'undefined') {
         throw new Error(`${value[contextKey]} not found`);
       }
-      switch (value._format) {
-      case 'JSON':
-        config[key] = JSON.parse(contextValue);
-        break;
-      default:
-        config[key] = contextValue;
+
+      if (typeof contextValue == 'undefined') {
+        config[key] = value._default;
+      } else {
+        config[key] = maybeDeserialise(value._format, contextValue);
       }
     } else {
       config[key] = resolveSpec(value, context);
     }
     return config;
   }, {});
+}
+
+function maybeDeserialise(format, value) {
+  const deserialisers = {'JSON': JSON.parse};
+  return (deserialisers[format] || (x => x))(value);
 }
